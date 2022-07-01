@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use super::recipe_ingredient::RecipeIngredientComplete;
 
-#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone)]
 pub struct Recipe {
     pub id: String,
     pub name: String,
@@ -18,6 +18,16 @@ pub struct GetRecipe {
     pub source: String,
 }
 
+impl GetRecipe {
+    pub fn from_recipe(data: &Recipe) -> GetRecipe {
+        GetRecipe {
+            id: data.id.clone(),
+            name: data.name.clone(),
+            source: data.source.clone(),
+        }
+    }
+}
+
 #[derive(Insertable)]
 #[table_name = "recipes"]
 pub struct NewRecipe<'a> {
@@ -25,7 +35,7 @@ pub struct NewRecipe<'a> {
     pub name: &'a str,
     pub source: &'a str,
 }
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct RecipeFull {
     pub id: String,
     pub name: String,
