@@ -35,7 +35,7 @@ pub struct NewRecipe<'a> {
     pub name: &'a str,
     pub source: &'a str,
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RecipeFull {
     pub id: String,
     pub name: String,

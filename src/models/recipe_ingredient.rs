@@ -39,7 +39,7 @@ pub struct NewRecipeIngredient<'a> {
     pub amount: &'a str,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RecipeIngredientComplete {
     pub id: String,
     pub ingredient_id: String,

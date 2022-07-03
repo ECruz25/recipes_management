@@ -33,6 +33,63 @@ pub fn get_recipes(conn: &PgConnection) -> Vec<models::recipe::Recipe> {
         .expect("No recipes")
 }
 
+pub fn get_recipes_with_ingredients(
+    conn: &PgConnection,
+) -> Result<Vec<models::recipe::RecipeFull>, &'static str> {
+    use crate::schema::recipe_ingredients::dsl::*;
+    let result: Vec<(
+        models::recipe_ingredient::RecipeIngredient,
+        models::recipe::Recipe,
+        models::ingredient::Ingredient,
+        models::measurement::Measurement,
+    )> = recipe_ingredients
+        .inner_join(schema::recipes::table)
+        .inner_join(schema::ingredients::table)
+        .inner_join(schema::measurements::table)
+        .load(conn)
+        .expect("No recipes found");
+    let recipe_ingredients_vec: Vec<RecipeIngredientComplete> = result
+        .into_iter()
+        .map(
+            |(recipe_ingredient, recip, ingredient, measurement)| RecipeIngredientComplete {
+                amount: recipe_ingredient.amount,
+                id: recipe_ingredient.id.clone(),
+                ingredient_id: ingredient.id.clone(),
+                measurement_id: measurement.id.clone(),
+                ingredient,
+                measurement,
+                recipe: recip,
+            },
+        )
+        .collect();
+    // if recipe_ingredients_vec.len() == 0 {
+    //     // let recipe = result.into_iter().next().unwrap().1; //.first().unwrap().1.clone();
+    //     let recipe = get_recipe(r_id, conn);
+    //     return models::recipe::RecipeFull {
+    //         id: String::from(r_id),
+    //         ingredients: Vec::new(),
+    //         name: recipe.name,
+    //         source: recipe.source,
+    //     };
+    //     // return get_recipe(r_id, conn);
+    // }
+    let t2 = recipe_ingredients_vec.to_owned().clone();
+    let t = recipe_ingredients_vec
+        .into_iter()
+        .map(|recipe_ingredient| {
+            let recipe1 = recipe_ingredient.recipe.clone();
+            let recipe = models::recipe::GetRecipe::from_recipe(&recipe1);
+            models::recipe::RecipeFull {
+                id: recipe.id.clone(),
+                ingredients: t2.clone(),
+                name: recipe.name.clone(),
+                source: recipe.source.clone(),
+            }
+        })
+        .clone();
+    Ok(t.collect())
+}
+
 pub fn get_recipe_with_ingredients(r_id: &str, conn: &PgConnection) -> models::recipe::RecipeFull {
     use crate::schema::recipe_ingredients::dsl::*;
     let result: Vec<(
@@ -61,24 +118,26 @@ pub fn get_recipe_with_ingredients(r_id: &str, conn: &PgConnection) -> models::r
             },
         )
         .collect();
-    if recipe_ingredients_vec.len() == 0 {
-        // let recipe = result.into_iter().next().unwrap().1; //.first().unwrap().1.clone();
-        let recipe = get_recipe(r_id, conn);
-        return models::recipe::RecipeFull {
-            id: String::from(r_id),
-            ingredients: Vec::new(),
-            name: recipe.name,
-            source: recipe.source,
-        };
-        // return get_recipe(r_id, conn);
-    }
-    let recipe1 = &recipe_ingredients_vec.first().clone().unwrap().recipe;
-    let recipe = models::recipe::GetRecipe::from_recipe(&recipe1);
-    models::recipe::RecipeFull {
-        id: recipe.id.clone(),
-        ingredients: recipe_ingredients_vec,
-        name: recipe.name.clone(),
-        source: recipe.source.clone(),
+    match recipe_ingredients_vec.len() {
+        0 => {
+            let recipe = get_recipe(r_id, conn);
+            models::recipe::RecipeFull {
+                id: String::from(r_id),
+                ingredients: Vec::new(),
+                name: recipe.name,
+                source: recipe.source,
+            }
+        }
+        _ => {
+            let recipe1 = &recipe_ingredients_vec.first().clone().unwrap().recipe;
+            let recipe = models::recipe::GetRecipe::from_recipe(&recipe1);
+            models::recipe::RecipeFull {
+                id: recipe.id.clone(),
+                ingredients: recipe_ingredients_vec,
+                name: recipe.name.clone(),
+                source: recipe.source.clone(),
+            }
+        }
     }
 }
 

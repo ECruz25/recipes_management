@@ -3,3 +3,4 @@ pub mod measurement;
 pub mod recipe;
 pub mod recipe_ingredient;
 pub mod schedule;
+pub mod planner;

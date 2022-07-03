@@ -10,6 +10,7 @@ pub struct Schedule {
     pub recipe_id: String,
     pub date_of_food: String,
     pub time_of_food: String,
+    pub amount: i32,
 }
 
 #[derive(Insertable, Deserialize)]
@@ -19,6 +20,7 @@ pub struct NewSchedule<'a> {
     pub recipe_id: &'a str,
     pub date_of_food: &'a str,
     pub time_of_food: &'a str,
+    pub amount: i32,
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize)]
@@ -27,5 +29,6 @@ pub struct ScheduleWithRecipe {
     pub recipe_id: String,
     pub date_of_food: String,
     pub time_of_food: String,
+    pub amount: i32,
     pub recipe: Recipe,
 }

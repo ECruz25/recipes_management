@@ -37,6 +37,7 @@ table! {
         recipe_id -> Bpchar,
         date_of_food -> Varchar,
         time_of_food -> Varchar,
+        amount -> Int4,
     }
 }
 

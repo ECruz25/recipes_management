@@ -1,0 +1,2 @@
+ALTER TABLE schedules
+    ADD amount INT DEFAULT 1 NOT NULL;

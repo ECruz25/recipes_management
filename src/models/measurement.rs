@@ -2,7 +2,7 @@ use crate::schema::measurements;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone)]
 pub struct Measurement {
     pub id: String,
     pub name: String,
@@ -17,7 +17,7 @@ pub struct NewMeasurement<'a> {
     pub short_name: &'a str,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GetMeasurement {
     pub id: String,
     pub name: String,

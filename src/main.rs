@@ -13,6 +13,7 @@ mod utils;
 
 use controllers::ingredients_controller;
 use controllers::measurements_controller;
+use controllers::planner_controller;
 use controllers::recipes_controller;
 use controllers::schedules_controller;
 
@@ -49,7 +50,8 @@ fn main() {
                 schedules_controller::get,
                 schedules_controller::post,
                 measurements_controller::get,
-                measurements_controller::post
+                measurements_controller::post,
+                planner_controller::post,
             ],
         )
         .launch();
