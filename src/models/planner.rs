@@ -1,9 +1,7 @@
 use super::ingredient;
 use super::measurement;
 use super::recipe;
-use super::recipe_ingredient;
 use super::schedule;
-use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -85,10 +83,10 @@ mod tests {
     use super::ingredient;
     use super::measurement;
     use super::recipe;
-    use super::recipe_ingredient;
     use super::schedule;
     use super::IngredientAmount;
     use super::Planner;
+    use crate::models::recipe_ingredient;
     #[test]
     fn it_works() {
         let ingredients = vec![ingredient::Ingredient {
