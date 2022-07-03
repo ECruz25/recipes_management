@@ -7,9 +7,9 @@ use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct IngredientAmount {
-    pub ingredient: ingredient::GetIngredient,
+    pub ingredient: ingredient::Ingredient,
     pub amount: f64,
-    pub measurement: Option<measurement::GetMeasurement>,
+    pub measurement: Option<measurement::Measurement>,
 }
 
 impl IngredientAmount {
@@ -17,7 +17,7 @@ impl IngredientAmount {
         let ingredient = ingredients
             .iter()
             .filter(|ingr| ingr.id == id)
-            .map(|ingr| ingredient::GetIngredient {
+            .map(|ingr| ingredient::Ingredient {
                 id: ingr.id.clone(),
                 name: ingr.name.clone(),
             })
@@ -148,11 +148,11 @@ mod tests {
             starting_date: "2020-01-01".to_string(),
             end_date: "2020-01-02".to_string(),
             ingredients: vec![IngredientAmount {
-                ingredient: ingredient::GetIngredient {
+                ingredient: ingredient::Ingredient {
                     id: "1".to_string(),
                     name: "ingredient 1".to_string(),
                 },
-                measurement: Some(measurement::GetMeasurement {
+                measurement: Some(measurement::Measurement {
                     id: "m1".to_string(),
                     name: "measurement 1".to_string(),
                     short_name: "m1".to_string(),

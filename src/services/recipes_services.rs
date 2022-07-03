@@ -267,7 +267,8 @@ pub fn get_ingredient_measurement(
     models::ingredient::Ingredient,
     models::measurement::Measurement,
 ) {
-    let ingredient = ingredients_services::get_ingredient(&data.ingredient_id, conn);
+    let ingredient = ingredients_services::get_ingredient(&data.ingredient_id, conn)
+        .expect("Ingredient not found");
     let measurement = measurements_services::get_measurement(&data.measurement_id, conn);
     (
         models::ingredient::Ingredient {

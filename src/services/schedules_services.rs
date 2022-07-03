@@ -1,10 +1,10 @@
-use diesel::prelude::*;
-use diesel::PgConnection;
-use uuid::Uuid;
 use crate::models::recipe::Recipe;
 use crate::models::schedule;
 use crate::schema::recipes;
+use diesel::prelude::*;
+use diesel::PgConnection;
 use schedule::{NewSchedule, Schedule, ScheduleWithRecipe};
+use uuid::Uuid;
 
 pub fn get_schedules(conn: &PgConnection) -> Vec<ScheduleWithRecipe> {
     use crate::schema::schedules::dsl::*;
@@ -24,7 +24,7 @@ pub fn get_schedules(conn: &PgConnection) -> Vec<ScheduleWithRecipe> {
             },
             recipe_id: sch.recipe_id.clone(),
             time_of_food: sch.time_of_food.clone(),
-            amount: sch.amount
+            amount: sch.amount,
         })
         .collect()
 }
@@ -37,7 +37,7 @@ pub fn create_schedule(data: &NewSchedule, conn: &PgConnection) -> Schedule {
         date_of_food: data.date_of_food,
         recipe_id: data.recipe_id,
         time_of_food: data.time_of_food,
-        amount: data.amount
+        amount: data.amount,
     };
     diesel::insert_into(schedules::table)
         .values(&new_recipe)

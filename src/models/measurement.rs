@@ -16,10 +16,3 @@ pub struct NewMeasurement<'a> {
     pub name: &'a str,
     pub short_name: &'a str,
 }
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct GetMeasurement {
-    pub id: String,
-    pub name: String,
-    pub short_name: String,
-}

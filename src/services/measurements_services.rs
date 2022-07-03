@@ -2,7 +2,6 @@ use diesel::prelude::*;
 use diesel::PgConnection;
 use uuid::Uuid;
 
-use crate::models::measurement::GetMeasurement;
 use crate::models::measurement::{Measurement, NewMeasurement};
 
 pub fn get_measurements(conn: &PgConnection) -> Vec<Measurement> {
@@ -26,13 +25,13 @@ pub fn create_measurement(name: &str, short_name: &str, conn: &PgConnection) -> 
         .expect("Error saving NewMeasurement")
 }
 
-pub fn get_measurement(measurement_id: &str, conn: &PgConnection) -> GetMeasurement {
+pub fn get_measurement(measurement_id: &str, conn: &PgConnection) -> Measurement {
     use crate::schema::measurements::dsl::*;
     let result = measurements
         .filter(id.eq(measurement_id))
         .load::<Measurement>(conn)
         .expect("No measurement");
-    GetMeasurement {
+    Measurement {
         id: result[0].id.clone(),
         name: result[0].name.clone(),
         short_name: result[0].short_name.clone(),

@@ -14,9 +14,3 @@ pub struct NewIngredient<'a> {
     pub id: &'a str,
     pub name: &'a str,
 }
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct GetIngredient {
-    pub id: String,
-    pub name: String,
-}

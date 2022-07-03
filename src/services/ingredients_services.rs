@@ -2,7 +2,6 @@ use diesel::prelude::*;
 use diesel::PgConnection;
 use uuid::Uuid;
 
-use crate::models::ingredient::GetIngredient;
 use crate::models::ingredient::{Ingredient, NewIngredient};
 
 pub fn get_ingredients(conn: &PgConnection) -> Vec<Ingredient> {
@@ -22,14 +21,17 @@ pub fn create_ingredient(name: &str, conn: &PgConnection) -> Ingredient {
         .expect("Error saving ingredient")
 }
 
-pub fn get_ingredient(ingredient_id: &str, conn: &PgConnection) -> GetIngredient {
+pub fn get_ingredient(
+    ingredient_id: &str,
+    conn: &PgConnection,
+) -> Result<Ingredient, &'static str> {
     use crate::schema::ingredients::dsl::*;
     let result = ingredients
         .filter(id.eq(ingredient_id))
         .load::<Ingredient>(conn)
         .expect("No ingredients");
-    GetIngredient {
+    Ok(Ingredient {
         id: result[0].id.clone(),
         name: result[0].name.clone(),
-    }
+    })
 }
