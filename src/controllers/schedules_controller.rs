@@ -1,11 +1,11 @@
 // use crate::models::recipe::Recipe;
-use crate::models::schedule::{NewSchedule, Schedule, ScheduleWithRecipe};
+use crate::models::schedule::{NewSchedule, Schedule, ScheduleDto};
 use crate::services::schedules_services::{create_schedule, get_schedules};
 use crate::utils;
 use rocket_contrib::json::Json;
 
 #[rocket::get("/schedules")]
-pub fn get() -> Json<Vec<ScheduleWithRecipe>> {
+pub fn get() -> Json<Vec<ScheduleDto>> {
     let connection = utils::establish_connection();
     let results = get_schedules(&connection);
     Json(results)

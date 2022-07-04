@@ -24,7 +24,7 @@ pub struct NewSchedule<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize)]
-pub struct ScheduleWithRecipe {
+pub struct ScheduleDto {
     pub id: String,
     pub recipe_id: String,
     pub date_of_food: String,

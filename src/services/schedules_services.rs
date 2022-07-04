@@ -3,10 +3,10 @@ use crate::models::schedule;
 use crate::schema::recipes;
 use diesel::prelude::*;
 use diesel::PgConnection;
-use schedule::{NewSchedule, Schedule, ScheduleWithRecipe};
+use schedule::{NewSchedule, Schedule, ScheduleDto};
 use uuid::Uuid;
 
-pub fn get_schedules(conn: &PgConnection) -> Vec<ScheduleWithRecipe> {
+pub fn get_schedules(conn: &PgConnection) -> Vec<ScheduleDto> {
     use crate::schema::schedules::dsl::*;
     let results: Vec<(Schedule, Recipe)> = schedules
         .inner_join(recipes::table)
@@ -14,7 +14,7 @@ pub fn get_schedules(conn: &PgConnection) -> Vec<ScheduleWithRecipe> {
         .expect("Could not load data");
     results
         .iter()
-        .map(|(sch, rec)| ScheduleWithRecipe {
+        .map(|(sch, rec)| ScheduleDto {
             id: sch.id.clone(),
             date_of_food: sch.date_of_food.clone(),
             recipe: Recipe {

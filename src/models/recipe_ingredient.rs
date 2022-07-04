@@ -6,7 +6,9 @@ use super::ingredient::Ingredient;
 use super::measurement::Measurement;
 use super::recipe::Recipe;
 
-#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize)]
+#[derive(Identifiable, Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Associations)]
+#[belongs_to(Ingredient)]
+#[table_name = "recipe_ingredients"]
 pub struct RecipeIngredient {
     pub id: String,
     pub recipe_id: String,

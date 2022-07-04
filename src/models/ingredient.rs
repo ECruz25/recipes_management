@@ -2,7 +2,8 @@ use crate::schema::ingredients;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone)]
+#[derive(Identifiable, Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone)]
+#[table_name = "ingredients"]
 pub struct Ingredient {
     pub id: String,
     pub name: String,

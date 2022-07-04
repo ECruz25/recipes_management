@@ -40,7 +40,7 @@ pub struct Planner {
 
 impl Planner {
     pub fn build(
-        scheduled_recipes: &[schedule::ScheduleWithRecipe],
+        scheduled_recipes: &[schedule::ScheduleDto],
         existing_recipes: &[recipe::RecipeFull],
         ingredients: &[ingredient::Ingredient],
         starting_date: &str,
@@ -93,8 +93,8 @@ mod tests {
             id: "i1".to_owned(),
             name: "ingredient 1".to_owned(),
         }];
-        let mut scheduled_recipes: Vec<schedule::ScheduleWithRecipe> = Vec::new();
-        scheduled_recipes.push(schedule::ScheduleWithRecipe {
+        let mut scheduled_recipes: Vec<schedule::ScheduleDto> = Vec::new();
+        scheduled_recipes.push(schedule::ScheduleDto {
             id: "s1".to_string(),
             recipe_id: "r1".to_string(),
             amount: 1,
@@ -106,7 +106,7 @@ mod tests {
                 name: "recipe 1".to_string(),
             },
         });
-        scheduled_recipes.push(schedule::ScheduleWithRecipe {
+        scheduled_recipes.push(schedule::ScheduleDto {
             id: "s2".to_string(),
             recipe_id: "r1".to_string(),
             amount: 2,
