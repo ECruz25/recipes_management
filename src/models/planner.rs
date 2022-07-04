@@ -41,7 +41,7 @@ pub struct Planner {
 impl Planner {
     pub fn build(
         scheduled_recipes: &[schedule::ScheduleDto],
-        existing_recipes: &[recipe::RecipeDTO],
+        existing_recipes: &[recipe::RecipeDto],
         ingredients: &[ingredient::Ingredient],
         starting_date: &str,
         end_date: &str,
@@ -119,7 +119,7 @@ mod tests {
             },
         });
         let mut existing_recipes = Vec::new();
-        existing_recipes.push(recipe::RecipeDTO {
+        existing_recipes.push(recipe::RecipeDto {
             source: "".to_string(),
             id: "r1".to_string(),
             name: "recipe 1".to_string(),

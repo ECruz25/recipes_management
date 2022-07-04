@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::models;
 use crate::models::recipe_ingredient::{
-    CreateRecipeIngredientDto, NewRecipeIngredient, RecipeIngredient, RecipeMeasurement,
+    CreateRecipeIngredientDto, NewRecipeIngredient, RecipeIngredient,
 };
 
 use super::ingredients_services;
@@ -35,7 +35,7 @@ pub fn get_recipes(
 
 pub fn get_recipes_with_ingredients(
     conn: &PgConnection,
-) -> Result<Vec<models::recipe::RecipeDTO>, &'static str> {
+) -> Result<Vec<models::recipe::RecipeDto>, &'static str> {
     use crate::schema::recipes::dsl::*;
     let recipes_vec = recipes
         .load::<models::recipe::Recipe>(conn)
@@ -50,7 +50,7 @@ pub fn get_recipes_with_ingredients(
     )> = recipes_vec.into_iter().zip(grouped_ingredients).collect();
     let result = result
         .into_iter()
-        .map(|(recipe, ingredients)| models::recipe::RecipeDTO::build(&recipe, &ingredients))
+        .map(|(recipe, ingredients)| models::recipe::RecipeDto::build(&recipe, &ingredients))
         .collect();
     Ok(result)
 }
@@ -124,7 +124,9 @@ pub fn update_recipe_ingredient(
 ) {
     use crate::schema::recipe_ingredients::dsl::*;
     let target = recipe_ingredients.filter(id.eq(rec_ing_id));
-    diesel::update(target).set((amount.eq(new_amount), measurement_id.eq(measure_id)));
+    let _ = diesel::update(target)
+        .set((amount.eq(new_amount), measurement_id.eq(measure_id)))
+        .execute(conn);
 }
 
 pub fn create_recipe(
@@ -165,7 +167,7 @@ pub fn get_recipe_ingredient(reci_id: &str, ingre_id: &str, conn: &PgConnection)
 pub fn add_ingredients<'a>(
     data: &CreateRecipeIngredientDto,
     conn: &PgConnection,
-) -> Result<models::recipe::RecipeDTO, &'static str> {
+) -> Result<models::recipe::RecipeDto, &'static str> {
     let recipe = get_recipe_with_ingredients(&data.recipe_id, &conn)?;
     for recipe_ingr in data.ingredients.iter() {
         let ingredient = ingredients_services::get_ingredient(&recipe_ingr.ingredient_id, conn)?;
@@ -189,31 +191,31 @@ pub fn add_ingredients<'a>(
             measurement_id: &measurement.id,
             amount: &recipe_ingr.amount.to_string(),
         };
-        let recip_ingredient = add_ingredient_to_recipe(recipe_ingre, &conn);
+        let _ = add_ingredient_to_recipe(recipe_ingre, &conn);
     }
     get_recipe_with_ingredients(&data.recipe_id, conn)
 }
 
-pub fn get_asnasd(
-    data: &RecipeMeasurement,
-    conn: &PgConnection,
-) -> Result<RecipeIngredient, &'static str> {
-    let ingredient = ingredients_services::get_ingredient(&data.ingredient_id, conn)?;
-    let measurement = measurements_services::get_measurement(&data.measurement_id, conn)?;
-    let recipe_ingredient = RecipeIngredient::belonging_to(&ingredient).first(conn);
-    match recipe_ingredient {
-        Ok(recipe_ingredient) => Ok(recipe_ingredient),
-        Err(_) => Err("- not found"),
-    }
-}
+// pub fn get_asnasd(
+//     data: &RecipeMeasurement,
+//     conn: &PgConnection,
+// ) -> Result<RecipeIngredient, &'static str> {
+//     let ingredient = ingredients_services::get_ingredient(&data.ingredient_id, conn)?;
+//     let measurement = measurements_services::get_measurement(&data.measurement_id, conn)?;
+//     let recipe_ingredient = RecipeIngredient::belonging_to(&ingredient).first(conn);
+//     match recipe_ingredient {
+//         Ok(recipe_ingredient) => Ok(recipe_ingredient),
+//         Err(_) => Err("- not found"),
+//     }
+// }
 
 pub fn get_recipe_with_ingredients(
     recipe_id: &str,
     conn: &PgConnection,
-) -> Result<models::recipe::RecipeDTO, &'static str> {
+) -> Result<models::recipe::RecipeDto, &'static str> {
     let recipe = get_recipe(recipe_id, conn)?;
     let ingredients = RecipeIngredient::belonging_to(&recipe)
         .load::<RecipeIngredient>(conn)
         .expect("Error loading ingredients");
-    Ok(models::recipe::RecipeDTO::build(&recipe, &ingredients))
+    Ok(models::recipe::RecipeDto::build(&recipe, &ingredients))
 }

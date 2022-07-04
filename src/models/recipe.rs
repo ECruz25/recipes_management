@@ -10,24 +10,6 @@ pub struct Recipe {
     pub name: String,
     pub source: String,
 }
-
-#[derive(Clone)]
-pub struct GetRecipe {
-    pub id: String,
-    pub name: String,
-    pub source: String,
-}
-
-impl GetRecipe {
-    pub fn from_recipe(data: &Recipe) -> GetRecipe {
-        GetRecipe {
-            id: data.id.clone(),
-            name: data.name.clone(),
-            source: data.source.clone(),
-        }
-    }
-}
-
 #[derive(Insertable)]
 #[table_name = "recipes"]
 pub struct NewRecipe<'a> {
@@ -36,16 +18,16 @@ pub struct NewRecipe<'a> {
     pub source: &'a str,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RecipeDTO {
+pub struct RecipeDto {
     pub id: String,
     pub name: String,
     pub source: String,
     pub ingredients: Option<Vec<RecipeIngredientDTO>>,
 }
 
-impl RecipeDTO {
-    pub fn build(recipe: &Recipe, ingredients: &[RecipeIngredient]) -> RecipeDTO {
-        RecipeDTO {
+impl RecipeDto {
+    pub fn build(recipe: &Recipe, ingredients: &[RecipeIngredient]) -> RecipeDto {
+        RecipeDto {
             id: recipe.id.clone(),
             name: recipe.name.clone(),
             source: recipe.source.clone(),

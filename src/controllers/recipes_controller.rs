@@ -1,4 +1,4 @@
-use crate::models::recipe::{Recipe, RecipeDTO};
+use crate::models::recipe::{Recipe, RecipeDto};
 use crate::models::recipe_ingredient::CreateRecipeIngredientDto;
 use crate::services::recipes_services;
 use crate::utils;
@@ -12,7 +12,7 @@ pub fn get() -> Json<Vec<Recipe>> {
 }
 
 #[rocket::get("/recipes/<id>")]
-pub fn get_by_id(id: String) -> Json<RecipeDTO> {
+pub fn get_by_id(id: String) -> Json<RecipeDto> {
     let connection = utils::establish_connection();
     let result =
         recipes_services::get_recipe_with_ingredients(&id, &connection).expect("Recipe not found");
@@ -33,7 +33,7 @@ pub fn post(recipe_input: Json<Recipe>) -> Json<Recipe> {
     format = "json",
     data = "<recipe_ingredients_input>"
 )]
-pub fn put<'a>(recipe_ingredients_input: Json<CreateRecipeIngredientDto>) -> Json<RecipeDTO> {
+pub fn put<'a>(recipe_ingredients_input: Json<CreateRecipeIngredientDto>) -> Json<RecipeDto> {
     let connection = utils::establish_connection();
     let results = recipes_services::add_ingredients(&recipe_ingredients_input, &connection)
         .expect("Could not update recipe");
