@@ -3,11 +3,15 @@ use diesel::PgConnection;
 use uuid::Uuid;
 
 use crate::models;
-use crate::models::recipe_ingredient::CreateRecipeIngredientDto;
-use crate::models::recipe_ingredient::NewRecipeIngredient;
-use crate::models::recipe_ingredient::RecipeIngredient;
-use crate::models::recipe_ingredient::RecipeIngredientComplete;
-use crate::models::recipe_ingredient::RecipeMeasurement;
+use crate::models::recipe_ingredient::{
+    CreateRecipeIngredientDto, NewRecipeIngredient, RecipeIngredient, RecipeIngredientComplete,
+    RecipeMeasurement,
+};
+// use crate::models::recipe_ingredient::;
+// use crate::models::recipe_ingredient::;
+// use crate::models::recipe_ingredient::;
+// use crate::models::recipe_ingredient::;
+// use crate::models::recipe_ingredient::;
 
 use super::ingredients_services;
 use super::measurements_services;
@@ -281,4 +285,16 @@ pub fn get_ingredient_measurement(
             short_name: measurement.short_name,
         },
     )
+}
+
+pub fn get_asnasd(
+    data: &RecipeMeasurement,
+    conn: &PgConnection,
+) -> Result<RecipeIngredient, &'static str> {
+    let ingredient = ingredients_services::get_ingredient(&data.ingredient_id, conn)?;
+    let recipe_ingredient = RecipeIngredient::belonging_to(&ingredient).first(conn);
+    match recipe_ingredient {
+        Ok(post) => Ok(post),
+        Err(_) => Err("- not found"),
+    }
 }
