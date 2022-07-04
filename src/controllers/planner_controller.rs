@@ -19,10 +19,3 @@ pub fn post() -> Json<planner::Planner> {
     );
     Json(planner_res)
 }
-
-// #[rocket::post("/ingredients", format = "json", data = "<ingredient_input>")]
-// pub fn post(ingredient_input: Json<NewIngredient>) -> Json<Ingredient> {
-//     let connection = utils::establish_connection();
-//     let results = create_ingredient(ingredient_input.name, &connection);
-//     Json(results)
-// }
