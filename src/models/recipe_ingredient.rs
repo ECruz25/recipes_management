@@ -6,8 +6,12 @@ use super::ingredient::Ingredient;
 use super::measurement::Measurement;
 use super::recipe::Recipe;
 
-#[derive(Identifiable, Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Associations)]
-#[belongs_to(Ingredient)]
+#[derive(
+    Identifiable, Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Associations, Clone,
+)]
+#[belongs_to(Recipe, foreign_key = "recipe_id")]
+#[belongs_to(Ingredient, foreign_key = "ingredient_id")]
+#[belongs_to(Measurement, foreign_key = "measurement_id")]
 #[table_name = "recipe_ingredients"]
 pub struct RecipeIngredient {
     pub id: String,
@@ -42,12 +46,31 @@ pub struct NewRecipeIngredient<'a> {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RecipeIngredientComplete {
+pub struct RecipeIngredientDTO {
     pub id: String,
     pub ingredient_id: String,
     pub measurement_id: String,
     pub amount: String,
-    pub recipe: Recipe,
-    pub ingredient: Ingredient,
-    pub measurement: Measurement,
+    pub recipe: Option<Recipe>,
+    pub ingredient: Option<Ingredient>,
+    pub measurement: Option<Measurement>,
+}
+
+impl RecipeIngredientDTO {
+    pub fn build(
+        recipe_ingredient: &RecipeIngredient,
+        recipe: Option<Recipe>,
+        ingredient: Option<Ingredient>,
+        measurement: Option<Measurement>,
+    ) -> RecipeIngredientDTO {
+        RecipeIngredientDTO {
+            id: recipe_ingredient.id.clone(),
+            ingredient_id: recipe_ingredient.ingredient_id.clone(),
+            measurement_id: recipe_ingredient.measurement_id.clone(),
+            amount: recipe_ingredient.amount.clone(),
+            recipe,
+            ingredient,
+            measurement,
+        }
+    }
 }

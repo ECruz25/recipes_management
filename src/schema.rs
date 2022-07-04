@@ -14,6 +14,18 @@ table! {
 }
 
 table! {
+    products (id) {
+        id -> Bpchar,
+        ingredient_id -> Bpchar,
+        measurement_id -> Bpchar,
+        name -> Varchar,
+        quantity -> Int4,
+        price -> Numeric,
+        brand -> Nullable<Varchar>,
+    }
+}
+
+table! {
     recipe_ingredients (id) {
         id -> Bpchar,
         recipe_id -> Bpchar,
@@ -49,6 +61,7 @@ joinable!(schedules -> recipes (recipe_id));
 allow_tables_to_appear_in_same_query!(
     ingredients,
     measurements,
+    products,
     recipe_ingredients,
     recipes,
     schedules,

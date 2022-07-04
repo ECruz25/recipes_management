@@ -2,9 +2,9 @@ use crate::schema::recipes;
 use diesel::Queryable;
 use serde::{Deserialize, Serialize};
 
-use super::recipe_ingredient::RecipeIngredientComplete;
+use super::recipe_ingredient::{RecipeIngredient, RecipeIngredientDTO};
 
-#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Queryable, Serialize, Clone, Identifiable)]
 pub struct Recipe {
     pub id: String,
     pub name: String,
@@ -36,9 +36,25 @@ pub struct NewRecipe<'a> {
     pub source: &'a str,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RecipeFull {
+pub struct RecipeDTO {
     pub id: String,
     pub name: String,
     pub source: String,
-    pub ingredients: Vec<RecipeIngredientComplete>,
+    pub ingredients: Option<Vec<RecipeIngredientDTO>>,
+}
+
+impl RecipeDTO {
+    pub fn build(recipe: &Recipe, ingredients: &[RecipeIngredient]) -> RecipeDTO {
+        RecipeDTO {
+            id: recipe.id.clone(),
+            name: recipe.name.clone(),
+            source: recipe.source.clone(),
+            ingredients: Some(
+                ingredients
+                    .into_iter()
+                    .map(|ingredient| RecipeIngredientDTO::build(ingredient, None, None, None))
+                    .collect(),
+            ),
+        }
+    }
 }

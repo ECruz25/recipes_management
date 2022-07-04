@@ -41,7 +41,7 @@ pub struct Planner {
 impl Planner {
     pub fn build(
         scheduled_recipes: &[schedule::ScheduleDto],
-        existing_recipes: &[recipe::RecipeFull],
+        existing_recipes: &[recipe::RecipeDTO],
         ingredients: &[ingredient::Ingredient],
         starting_date: &str,
         end_date: &str,
@@ -58,7 +58,7 @@ impl Planner {
                 .iter()
                 .filter(|exis| exis.id == *recipe.0)
                 .for_each(|recipe1| {
-                    recipe1.ingredients.iter().for_each(|ingredient| {
+                    recipe1.ingredients.iter().flatten().for_each(|ingredient| {
                         let ingredint = ingredients_hs
                             .entry(&&ingredient.ingredient_id)
                             .or_insert(0.0);
@@ -119,30 +119,30 @@ mod tests {
             },
         });
         let mut existing_recipes = Vec::new();
-        existing_recipes.push(recipe::RecipeFull {
+        existing_recipes.push(recipe::RecipeDTO {
             source: "".to_string(),
             id: "r1".to_string(),
             name: "recipe 1".to_string(),
-            ingredients: vec![recipe_ingredient::RecipeIngredientComplete {
+            ingredients: Some(vec![recipe_ingredient::RecipeIngredientDTO {
                 id: "ri1".to_string(),
                 ingredient_id: "i1".to_string(),
                 measurement_id: "m1".to_string(),
                 amount: "1".to_string(),
-                ingredient: ingredient::Ingredient {
+                ingredient: Some(ingredient::Ingredient {
                     id: "i1".to_string(),
                     name: "ingredient 1".to_string(),
-                },
-                measurement: measurement::Measurement {
+                }),
+                measurement: Some(measurement::Measurement {
                     id: "m1".to_string(),
                     name: "measurement 1".to_string(),
                     short_name: "m1".to_string(),
-                },
-                recipe: recipe::Recipe {
+                }),
+                recipe: Some(recipe::Recipe {
                     source: "".to_string(),
                     id: "r1".to_string(),
                     name: "recipe 1".to_string(),
-                },
-            }],
+                }),
+            }]),
         });
         let expected = Planner {
             starting_date: "2020-01-01".to_string(),
